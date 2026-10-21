@@ -96,7 +96,7 @@ export default async function EventPage({
 
           {isOwner && (
             <div className="self-start">
-              <EventActions eventId={event.id} />
+              <EventActions eventId={event.id} eventTitle={event.title} />
             </div>
           )}
         </div>
