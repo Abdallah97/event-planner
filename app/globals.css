@@ -1,31 +1,66 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #0b1120; /* Deep navy blue background */
-  --color-primary: #3b82f6; /* Soft sky blue (used in buttons and highlights) */
-  --color-secondary: #06b6d4; /* Cyan accent (used in code highlights and icons) */
-  --color-foreground: #f1f5f9; /* Light text color */
-  --color-muted: #94a3b8; /* Muted slate (used for secondary text) */
+  --color-background: #f8f9fc;
+  --color-primary: #7c3aed;
+  --color-secondary: #ec4899;
+  --color-foreground: #0f172a;
+  --color-muted: #64748b;
+  --color-surface: #ffffff;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    min-height: 100vh;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
 }
 
 @layer components {
   .card {
-    @apply bg-slate-800 border border-slate-700 rounded-lg shadow-lg;
+    @apply bg-white border border-slate-100 rounded-2xl shadow-sm shadow-purple-500/5;
+  }
+
+  .card-elevated {
+    @apply bg-white border border-slate-100/80 rounded-3xl shadow-md shadow-purple-500/5;
   }
 
   .input-field {
-    @apply w-full px-3 py-2 border border-slate-600 rounded-md bg-slate-800 text-foreground placeholder-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary;
+    @apply w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all;
   }
 
   .btn-primary {
-    @apply bg-primary text-background px-4 py-2 rounded-md font-medium hover:bg-primary/90 transition-colors cursor-pointer;
+    @apply bg-violet-600 text-white px-4 py-2.5 rounded-xl font-medium hover:bg-violet-700 transition-all shadow-sm shadow-violet-500/25 cursor-pointer inline-flex items-center justify-center gap-2 text-sm;
   }
 
   .btn-secondary {
-    @apply bg-secondary text-background px-4 py-2 rounded-md font-medium hover:bg-secondary/90 transition-colors cursor-pointer;
+    @apply bg-slate-100 text-slate-700 border border-slate-200/60 px-4 py-2.5 rounded-xl font-medium hover:bg-slate-200/80 transition-all cursor-pointer inline-flex items-center justify-center gap-2 text-sm;
   }
 
   .btn-danger {
-    @apply bg-red-600 text-white px-4 py-2 rounded-md font-medium hover:bg-red-700 transition-colors cursor-pointer;
+    @apply bg-rose-50 text-rose-600 border border-rose-200/80 px-4 py-2 rounded-xl font-medium hover:bg-rose-100 transition-all cursor-pointer inline-flex items-center justify-center gap-2 text-sm;
+  }
+
+  /* Pastel Card Accent Variants matching reference design */
+  .badge-pastel-pink {
+    @apply bg-pink-50 text-pink-700 border border-pink-200/60;
+  }
+
+  .badge-pastel-blue {
+    @apply bg-blue-50 text-blue-700 border border-blue-200/60;
+  }
+
+  .badge-pastel-amber {
+    @apply bg-amber-50 text-amber-700 border border-amber-200/60;
+  }
+
+  .badge-pastel-teal {
+    @apply bg-teal-50 text-teal-700 border border-teal-200/60;
+  }
+
+  .badge-pastel-purple {
+    @apply bg-purple-50 text-purple-700 border border-purple-200/60;
   }
 }
