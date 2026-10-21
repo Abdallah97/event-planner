@@ -25,7 +25,10 @@ export async function GET(request: NextRequest) {
 
     const events = await prisma.event.findMany({
       where,
-      include: { user: { select: { name: true, email: true } } },
+      include: {
+        user: { select: { name: true, email: true } },
+        _count: { select: { rsvps: true } },
+      },
       orderBy: { date: "asc" },
     });
     return NextResponse.json(events);

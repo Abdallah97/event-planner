@@ -7,82 +7,43 @@ import { useState, useMemo } from "react";
 
 interface EventsListProps {
   events: Event[];
-  searchParams?: { search?: string; filter?: string };
   isAuthenticated: boolean;
+  searchParams?: { search?: string; filter?: string };
 }
 
-// Visual themes for the top upcoming cards matching the screenshot
-const CARD_THEMES = [
+const CARD_ACCENTS = [
   {
-    name: "pink",
-    iconBg: "bg-pink-100/90 text-pink-600",
-    gradient: "from-pink-500 to-rose-400",
-    cardBg: "hover:border-pink-200 hover:shadow-pink-500/5",
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-      </svg>
-    ),
+    iconBg: "bg-purple-100 text-purple-700",
+    gradient: "from-violet-600 to-purple-500",
+    hoverBorder: "hover:border-purple-200",
   },
   {
-    name: "blue",
-    iconBg: "bg-blue-100/90 text-blue-600",
-    gradient: "from-blue-500 to-sky-400",
-    cardBg: "hover:border-blue-200 hover:shadow-blue-500/5",
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-      </svg>
-    ),
+    iconBg: "bg-blue-100 text-blue-700",
+    gradient: "from-blue-600 to-sky-500",
+    hoverBorder: "hover:border-blue-200",
   },
   {
-    name: "amber",
-    iconBg: "bg-amber-100/90 text-amber-600",
-    gradient: "from-amber-500 to-orange-400",
-    cardBg: "hover:border-amber-200 hover:shadow-amber-500/5",
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-      </svg>
-    ),
+    iconBg: "bg-emerald-100 text-emerald-700",
+    gradient: "from-emerald-600 to-teal-500",
+    hoverBorder: "hover:border-emerald-200",
   },
   {
-    name: "teal",
-    iconBg: "bg-teal-100/90 text-teal-600",
-    gradient: "from-teal-500 to-cyan-400",
-    cardBg: "hover:border-teal-200 hover:shadow-teal-500/5",
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-      </svg>
-    ),
+    iconBg: "bg-amber-100 text-amber-700",
+    gradient: "from-amber-600 to-orange-500",
+    hoverBorder: "hover:border-amber-200",
   },
 ];
-
-// Helper to deduce a sensible category type for each event
-function getEventType(title: string, description: string): string {
-  const combined = `${title} ${description}`.toLowerCase();
-  if (combined.includes("birthday") || combined.includes("party")) return "Birthday";
-  if (combined.includes("wedding")) return "Wedding";
-  if (combined.includes("seminar") || combined.includes("workshop")) return "Seminars & Workshops";
-  if (combined.includes("charity") || combined.includes("gala") || combined.includes("community")) return "Charity";
-  if (combined.includes("hackathon") || combined.includes("tech") || combined.includes("bootcamp")) return "Tech & Hackathons";
-  if (combined.includes("mixer") || combined.includes("networking")) return "Networking";
-  return "General Event";
-}
 
 export default function EventsList({
   events,
   isAuthenticated,
 }: EventsListProps) {
-  // Local state for interactive table filters
   const [activeTab, setActiveTab] = useState<"active" | "completed">("active");
-  const [selectedType, setSelectedType] = useState<string>("ALL");
-  const [sortBy, setSortBy] = useState<"date" | "title" | "attendees">("date");
+  const [sortBy, setSortBy] = useState<"date" | "title" | "rsvps">("date");
 
   const now = useMemo(() => new Date(), []);
 
-  // Segregate events into active (upcoming/ongoing) and completed (past)
+  // Segregate into active (upcoming) and completed (past)
   const activeEvents = useMemo(
     () => events.filter((e) => new Date(e.date) >= now),
     [events, now]
@@ -92,18 +53,14 @@ export default function EventsList({
     [events, now]
   );
 
-  // Cards for the top row: Pick up to 4 upcoming events
+  // Top cards: Up to 4 upcoming events
   const upcomingCards = useMemo(() => {
     return activeEvents.slice(0, 4);
   }, [activeEvents]);
 
-  // Filtered & Sorted events for the Manage Events table
+  // Filtered & sorted events for table
   const tableEvents = useMemo(() => {
-    let list = activeTab === "active" ? activeEvents : completedEvents;
-
-    if (selectedType !== "ALL") {
-      list = list.filter((e) => getEventType(e.title, e.description) === selectedType);
-    }
+    const list = activeTab === "active" ? activeEvents : completedEvents;
 
     return [...list].sort((a, b) => {
       if (sortBy === "date") {
@@ -112,73 +69,68 @@ export default function EventsList({
       if (sortBy === "title") {
         return a.title.localeCompare(b.title);
       }
-      if (sortBy === "attendees") {
-        const aCount = a.maxAttendees || 0;
-        const bCount = b.maxAttendees || 0;
+      if (sortBy === "rsvps") {
+        const aCount = a._count?.rsvps || 0;
+        const bCount = b._count?.rsvps || 0;
         return bCount - aCount;
       }
       return 0;
     });
-  }, [activeTab, activeEvents, completedEvents, selectedType, sortBy]);
-
-  // Unique types present in the events list for dropdown
-  const availableTypes = useMemo(() => {
-    const types = new Set(events.map((e) => getEventType(e.title, e.description)));
-    return Array.from(types);
-  }, [events]);
+  }, [activeTab, activeEvents, completedEvents, sortBy]);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       {/* ============================================================ */}
       {/* 1. UPCOMING EVENTS CARDS GRID                                */}
       {/* ============================================================ */}
       <section>
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-slate-900 tracking-tight">
             Upcoming Events
           </h2>
           {upcomingCards.length > 0 && (
             <span className="text-xs font-semibold text-violet-600 bg-violet-50 px-2.5 py-1 rounded-full border border-violet-100">
-              {upcomingCards.length} featured
+              {upcomingCards.length} scheduled
             </span>
           )}
         </div>
 
         {upcomingCards.length === 0 ? (
           <div className="card p-8 text-center bg-white border border-slate-100 rounded-2xl">
-            <p className="text-sm text-slate-500">No upcoming events scheduled right now.</p>
+            <p className="text-sm text-slate-500">No upcoming events scheduled.</p>
             {isAuthenticated && (
               <Link href="/events/create" className="btn-primary mt-4 inline-flex">
-                Create an Event
+                Create Event
               </Link>
             )}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {upcomingCards.map((event, idx) => {
-              const theme = CARD_THEMES[idx % CARD_THEMES.length];
+              const accent = CARD_ACCENTS[idx % CARD_ACCENTS.length];
               const eventDate = new Date(event.date);
               const daysLeft = differenceInDays(eventDate, now);
               const daysText =
                 daysLeft > 0 ? `${daysLeft} days left` : daysLeft === 0 ? "Today" : "Completed";
 
-              // Approximate progress/tasks simulation based on capacity & RSVPs
-              const max = event.maxAttendees || 60;
-              const current = Math.min(max, Math.max(12, (idx + 1) * 14 + 18));
-              const percentage = Math.min(100, Math.round((current / max) * 100));
+              const rsvpCount = event._count?.rsvps || 0;
+              const maxCap = event.maxAttendees;
+              const percent = maxCap ? Math.min(100, Math.round((rsvpCount / maxCap) * 100)) : 100;
 
               return (
                 <div
                   key={event.id}
-                  className={`card p-5 bg-white border border-slate-100/90 rounded-2xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between ${theme.cardBg} group`}
+                  className={`card p-5 bg-white border border-slate-100/90 rounded-2xl shadow-xs hover:shadow-md transition-all flex flex-col justify-between ${accent.hoverBorder} group`}
                 >
                   <div>
                     {/* Header: Icon & Days Left Badge */}
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between mb-3.5">
                       <div
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center ${theme.iconBg} shadow-xs`}
+                        className={`w-9 h-9 rounded-xl flex items-center justify-center ${accent.iconBg}`}
                       >
-                        {theme.icon}
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
                       </div>
                       <span className="text-[11px] font-medium text-slate-500 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-100">
                         {daysText}
@@ -188,46 +140,48 @@ export default function EventsList({
                     {/* Title */}
                     <Link
                       href={`/events/${event.id}`}
-                      className="block font-semibold text-slate-900 group-hover:text-violet-600 text-sm leading-snug line-clamp-2 transition-colors mb-2"
+                      className="block font-bold text-slate-900 group-hover:text-violet-600 text-sm leading-snug line-clamp-1 transition-colors mb-1"
                     >
                       {event.title}
                     </Link>
 
-                    {/* Tasks / Capacity count */}
-                    <p className="text-xs text-slate-400 font-medium mb-3">
-                      Tasks: <span className="text-slate-700 font-semibold">{current}/{max}</span>
+                    {/* Location */}
+                    <p className="text-[11px] text-slate-400 line-clamp-1 mb-4 flex items-center gap-1">
+                      <svg className="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      </svg>
+                      <span>{event.location}</span>
                     </p>
 
-                    {/* Progress Bar */}
-                    <div className="space-y-1.5 mb-5">
+                    {/* RSVPs Progress Bar */}
+                    <div className="space-y-1.5 mb-4">
                       <div className="flex justify-between items-center text-[11px]">
-                        <span className="text-slate-400 font-medium">Progress</span>
-                        <span className="text-slate-700 font-semibold">{percentage}%</span>
+                        <span className="text-slate-400 font-medium">RSVPs</span>
+                        <span className="text-slate-700 font-semibold">
+                          {rsvpCount} {maxCap ? `/ ${maxCap}` : "(Unlimited)"}
+                        </span>
                       </div>
-                      <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                        <div
-                          className={`h-full bg-gradient-to-r ${theme.gradient} rounded-full transition-all duration-500`}
-                          style={{ width: `${percentage}%` }}
-                        />
-                      </div>
+                      {maxCap ? (
+                        <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full bg-gradient-to-r ${accent.gradient} rounded-full transition-all duration-500`}
+                            style={{ width: `${percent}%` }}
+                          />
+                        </div>
+                      ) : null}
                     </div>
                   </div>
 
-                  {/* Assignees Footer */}
-                  <div className="flex items-center justify-between pt-3 border-t border-slate-100/70 text-xs">
-                    <span className="text-slate-400 font-medium text-[11px]">Assignees</span>
-                    <div className="flex items-center -space-x-1.5">
-                      <div
-                        title={event.user?.name || "Organizer"}
-                        className="w-7 h-7 rounded-full ring-2 ring-white bg-gradient-to-tr from-violet-500 to-purple-600 text-white text-[10px] font-bold flex items-center justify-center shadow-xs"
-                      >
-                        {event.user?.name ? event.user.name[0].toUpperCase() : "A"}
+                  {/* Organizer Footer */}
+                  <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
+                    <span className="text-slate-400 font-medium text-[11px]">Organizer</span>
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-6 h-6 rounded-full bg-violet-100 text-violet-700 font-bold text-[10px] flex items-center justify-center">
+                        {event.user?.name ? event.user.name[0].toUpperCase() : "O"}
                       </div>
-                      <div
-                        className="w-7 h-7 rounded-full ring-2 ring-white bg-gradient-to-tr from-rose-400 to-pink-500 text-white text-[10px] font-bold flex items-center justify-center shadow-xs"
-                      >
-                        +2
-                      </div>
+                      <span className="text-xs font-semibold text-slate-700 truncate max-w-[100px]">
+                        {event.user?.name || "Organizer"}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -238,17 +192,17 @@ export default function EventsList({
       </section>
 
       {/* ============================================================ */}
-      {/* 2. MANAGE EVENTS DATA TABLE                                  */}
+      {/* 2. MANAGE EVENTS DATA TABLE (DATABASE STRUCTURE)            */}
       {/* ============================================================ */}
       <section className="card p-6 bg-white border border-slate-100 rounded-3xl shadow-sm">
-        {/* Section Header with Tabs and Controls */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+        {/* Table Header Controls */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
           <div>
             <h3 className="text-lg font-bold text-slate-900 tracking-tight">
               Manage Events
             </h3>
             {/* Pill Tabs: Active & Completed */}
-            <div className="flex items-center gap-2 mt-3">
+            <div className="flex items-center gap-2 mt-2.5">
               <button
                 type="button"
                 onClick={() => setActiveTab("active")}
@@ -274,74 +228,47 @@ export default function EventsList({
             </div>
           </div>
 
-          {/* Right Controls: Sort and Type Dropdowns */}
-          <div className="flex items-center gap-3 flex-wrap">
-            {/* Sort by */}
-            <div className="flex items-center gap-1.5 text-xs text-slate-500">
-              <span className="font-medium hidden sm:inline">Sort:</span>
-              <select
-                value={sortBy}
-                onChange={(e) =>
-                  setSortBy(e.target.value as "date" | "title" | "attendees")
-                }
-                className="bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-violet-500/20 cursor-pointer"
-              >
-                <option value="date">Date</option>
-                <option value="title">Title</option>
-                <option value="attendees">Capacity</option>
-              </select>
-            </div>
-
-            {/* Event Type Filter */}
-            <div className="flex items-center gap-1.5 text-xs text-slate-500">
-              <span className="font-medium hidden sm:inline">Type:</span>
-              <select
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-                className="bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-violet-500/20 cursor-pointer"
-              >
-                <option value="ALL">All Types</option>
-                {availableTypes.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-              </select>
-            </div>
+          {/* Sort Control */}
+          <div className="flex items-center gap-2 text-xs text-slate-500">
+            <span className="font-medium">Sort by:</span>
+            <select
+              value={sortBy}
+              onChange={(e) =>
+                setSortBy(e.target.value as "date" | "title" | "rsvps")
+              }
+              className="bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-violet-500/20 cursor-pointer"
+            >
+              <option value="date">Date</option>
+              <option value="title">Title</option>
+              <option value="rsvps">RSVPs</option>
+            </select>
           </div>
         </div>
 
-        {/* Table Container */}
+        {/* Table Content */}
         {tableEvents.length === 0 ? (
           <div className="text-center py-16">
-            <div className="w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center mx-auto mb-3">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-              </svg>
-            </div>
-            <p className="text-sm font-semibold text-slate-700">No events found in this view</p>
-            <p className="text-xs text-slate-400 mt-1">Try switching tabs or adjusting your filter</p>
+            <p className="text-sm font-semibold text-slate-700">No events found in this tab.</p>
+            <p className="text-xs text-slate-400 mt-1">Check back later or create a new event.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
                 <tr className="border-b border-slate-100 text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
-                  <th scope="col" className="py-4 pl-1 pr-4">Event name</th>
-                  <th scope="col" className="py-4 px-4">Date</th>
-                  <th scope="col" className="py-4 px-4">Type</th>
-                  <th scope="col" className="py-4 px-4">Assignees</th>
-                  <th scope="col" className="py-4 px-4">Tasks</th>
-                  <th scope="col" className="py-4 px-4">Status</th>
-                  <th scope="col" className="py-4 pl-4 pr-1 text-right">Actions</th>
+                  <th scope="col" className="py-3.5 pl-1 pr-4">Event Name</th>
+                  <th scope="col" className="py-3.5 px-4">Date & Time</th>
+                  <th scope="col" className="py-3.5 px-4">Location</th>
+                  <th scope="col" className="py-3.5 px-4">Organizer</th>
+                  <th scope="col" className="py-3.5 px-4">RSVPs</th>
+                  <th scope="col" className="py-3.5 px-4">Status</th>
+                  <th scope="col" className="py-3.5 pl-4 pr-1 text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-700">
-                {tableEvents.map((event, i) => {
-                  const eventType = getEventType(event.title, event.description);
+                {tableEvents.map((event) => {
                   const isPast = new Date(event.date) < now;
-                  const total = event.maxAttendees || 60;
-                  const current = Math.min(total, Math.max(10, (i + 1) * 12 + 15));
+                  const rsvpsCount = event._count?.rsvps || 0;
 
                   return (
                     <tr
@@ -357,30 +284,25 @@ export default function EventsList({
                           {event.title}
                         </Link>
                         <span className="text-[11px] text-slate-400 font-normal truncate block max-w-xs mt-0.5">
-                          {event.location}
+                          {event.description}
                         </span>
                       </td>
 
-                      {/* Date */}
-                      <td className="py-4 px-4 whitespace-nowrap text-slate-500 font-medium">
-                        {format(new Date(event.date), "MMMM d, yyyy")}
+                      {/* Date & Time */}
+                      <td className="py-4 px-4 whitespace-nowrap text-slate-600 font-medium">
+                        {format(new Date(event.date), "PPP 'at' p")}
                       </td>
 
-                      {/* Type */}
-                      <td className="py-4 px-4 whitespace-nowrap">
-                        <span className="text-slate-600 font-medium">
-                          {eventType}
-                        </span>
+                      {/* Location */}
+                      <td className="py-4 px-4 whitespace-nowrap text-slate-600">
+                        {event.location}
                       </td>
 
-                      {/* Assignees */}
+                      {/* Organizer */}
                       <td className="py-4 px-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
-                          <div className="relative">
-                            <div className="w-7 h-7 rounded-full bg-violet-100 text-violet-700 font-bold flex items-center justify-center text-[10px]">
-                              {event.user?.name ? event.user.name[0].toUpperCase() : "O"}
-                            </div>
-                            <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 ring-1 ring-white" />
+                          <div className="w-6 h-6 rounded-full bg-violet-100 text-violet-700 font-bold flex items-center justify-center text-[10px]">
+                            {event.user?.name ? event.user.name[0].toUpperCase() : "O"}
                           </div>
                           <span className="text-xs text-slate-700 font-medium">
                             {event.user?.name || "Organizer"}
@@ -388,34 +310,31 @@ export default function EventsList({
                         </div>
                       </td>
 
-                      {/* Tasks / Progress */}
+                      {/* RSVPs / Capacity */}
                       <td className="py-4 px-4 whitespace-nowrap font-medium text-slate-700">
-                        {current}/{total}
+                        {rsvpsCount} {event.maxAttendees ? `/ ${event.maxAttendees}` : "(Unlimited)"}
                       </td>
 
                       {/* Status */}
                       <td className="py-4 px-4 whitespace-nowrap">
                         {isPast ? (
                           <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200/60">
-                            Completed
+                            Past
                           </span>
                         ) : (
-                          <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200/60">
+                          <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
                             Upcoming
                           </span>
                         )}
                       </td>
 
-                      {/* Actions */}
+                      {/* Action */}
                       <td className="py-4 pl-4 pr-1 whitespace-nowrap text-right">
                         <Link
                           href={`/events/${event.id}`}
-                          className="inline-flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
-                          title="View Details"
+                          className="text-xs font-semibold text-violet-600 hover:text-violet-700 hover:underline"
                         >
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                          </svg>
+                          View Details →
                         </Link>
                       </td>
                     </tr>
