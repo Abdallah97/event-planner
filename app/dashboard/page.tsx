@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { Event, EventRSVP } from "@/lib/models";
+import { prisma } from "@/lib/prisma";
 import { format } from "date-fns";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -11,27 +12,33 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const userRSVPsRes = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/dashboard/rsvps`,
-    {
-      next: { tags: ["rsvps"] },
-    }
-  );
+  const [userRSVPsData, userEventsData] = await Promise.all([
+    prisma.rSVP.findMany({
+      where: { userId: session.user.id },
+      include: {
+        event: {
+          include: {
+            user: {
+              select: { name: true },
+            },
+          },
+        },
+      },
+      orderBy: { event: { date: "asc" } },
+    }),
+    prisma.event.findMany({
+      where: { userId: session.user.id },
+      include: {
+        _count: {
+          select: { rsvps: true },
+        },
+      },
+      orderBy: { date: "asc" },
+    }),
+  ]);
 
-  const userRSVPs: EventRSVP[] = userRSVPsRes.ok
-    ? await userRSVPsRes.json()
-    : [];
-
-  const userEventsRes = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/dashboard/events`,
-    {
-      next: { tags: ["events"] },
-    }
-  );
-
-  const userEvents: Event[] = userEventsRes.ok
-    ? await userEventsRes.json()
-    : [];
+  const userRSVPs = userRSVPsData as unknown as EventRSVP[];
+  const userEvents = userEventsData as unknown as Event[];
 
   const now = new Date();
   const upcomingEvents = userEvents.filter(
