@@ -16,15 +16,6 @@ export default function Sidebar({ session }: SidebarProps) {
 
   const navItems = [
     {
-      name: "Dashboard",
-      href: "/dashboard",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-        </svg>
-      ),
-    },
-    {
       name: "Events",
       href: "/events",
       icon: (
@@ -34,83 +25,20 @@ export default function Sidebar({ session }: SidebarProps) {
       ),
     },
     {
+      name: "Dashboard",
+      href: "/dashboard",
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+        </svg>
+      ),
+    },
+    {
       name: "Create Event",
       href: "/events/create",
       icon: (
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 4v16m8-8H4" />
-        </svg>
-      ),
-    },
-    {
-      name: "Tasks",
-      href: "#tasks",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-        </svg>
-      ),
-    },
-    {
-      name: "Vendors",
-      href: "#vendors",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-        </svg>
-      ),
-    },
-    {
-      name: "Templates",
-      href: "#templates",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-        </svg>
-      ),
-    },
-    {
-      name: "Calendar",
-      href: "#calendar",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-    },
-    {
-      name: "Inbox",
-      href: "#inbox",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-        </svg>
-      ),
-    },
-    {
-      name: "Payments",
-      href: "#payments",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-        </svg>
-      ),
-    },
-    {
-      name: "Reports",
-      href: "#reports",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-      ),
-    },
-    {
-      name: "Integrations",
-      href: "#integrations",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
         </svg>
       ),
     },
@@ -143,7 +71,7 @@ export default function Sidebar({ session }: SidebarProps) {
 
       {/* Main Sidebar Shell */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-white/90 backdrop-blur-md border-r border-slate-200/70 flex flex-col transition-transform duration-200 ease-in-out ${
+        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-white/95 backdrop-blur-md border-r border-slate-200/70 flex flex-col transition-transform duration-200 ease-in-out ${
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
@@ -157,18 +85,20 @@ export default function Sidebar({ session }: SidebarProps) {
             </div>
             <div>
               <span className="text-lg font-bold text-slate-900 tracking-tight">EventPlanner</span>
-              <span className="block text-[10px] uppercase font-semibold tracking-wider text-violet-600">Enterprise</span>
+              <span className="block text-[10px] uppercase font-semibold tracking-wider text-violet-600">Platform</span>
             </div>
           </Link>
         </div>
 
         {/* Navigation Items */}
-        <nav className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
+        <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-1.5">
+          <p className="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">
+            Menu
+          </p>
           {navItems.map((item) => {
             const isActive =
-              item.href !== "#" &&
-              (pathname === item.href ||
-                (item.href === "/events" && pathname.startsWith("/events") && pathname !== "/events/create"));
+              item.href === pathname ||
+              (item.href === "/events" && pathname.startsWith("/events") && pathname !== "/events/create");
 
             return (
               <Link
@@ -190,27 +120,10 @@ export default function Sidebar({ session }: SidebarProps) {
           })}
         </nav>
 
-        {/* Upgrade to Pro Card */}
-        <div className="px-4 py-3 shrink-0">
-          <div className="p-4 rounded-2xl bg-gradient-to-br from-violet-600 to-purple-700 text-white shadow-lg shadow-purple-600/20 relative overflow-hidden">
-            <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/10 rounded-full blur-xl pointer-events-none" />
-            <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center mb-3">
-              <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-              </svg>
-            </div>
-            <h4 className="font-semibold text-sm leading-tight">Upgrade to Pro</h4>
-            <p className="text-xs text-purple-200 mt-1 mb-3">Unlock all features, ticketing & analytics now</p>
-            <button className="w-full py-1.5 px-3 bg-white text-violet-700 text-xs font-semibold rounded-lg shadow-xs hover:bg-purple-50 transition-colors cursor-pointer">
-              Upgrade Now
-            </button>
-          </div>
-        </div>
-
         {/* User Session Footer */}
         <div className="p-4 border-t border-slate-100 bg-slate-50/50 shrink-0 flex items-center justify-between">
           {session ? (
-            <div className="flex items-center gap-3 min-w-0">
+            <div className="flex items-center gap-3 min-w-0 w-full">
               {session.user?.image ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img
@@ -240,9 +153,9 @@ export default function Sidebar({ session }: SidebarProps) {
           ) : (
             <Link
               href="/login"
-              className="w-full btn-primary text-xs py-2"
+              className="w-full btn-primary text-xs py-2.5 text-center"
             >
-              Sign In
+              Sign In with GitHub
             </Link>
           )}
         </div>
