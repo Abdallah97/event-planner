@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import EditEventForm from "@/components/EditEventForm";
-import { prisma } from "@/lib/prisma";
+import { getEventById } from "@/lib/data/events";
 import { notFound, redirect } from "next/navigation";
 
 export default async function EditEventPage({
@@ -15,9 +15,7 @@ export default async function EditEventPage({
     redirect(`/login?callbackUrl=/events/${eventId}/edit`);
   }
 
-  const event = await prisma.event.findUnique({
-    where: { id: eventId },
-  });
+  const event = await getEventById(eventId);
 
   if (!event) {
     notFound();

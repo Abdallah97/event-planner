@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
+import { getDashboardData } from "@/lib/data/dashboard";
 import { Event, EventRSVP } from "@/lib/models";
-import { prisma } from "@/lib/prisma";
 import { format } from "date-fns";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -12,30 +12,7 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const [userRSVPsData, userEventsData] = await Promise.all([
-    prisma.rSVP.findMany({
-      where: { userId: session.user.id },
-      include: {
-        event: {
-          include: {
-            user: {
-              select: { name: true },
-            },
-          },
-        },
-      },
-      orderBy: { event: { date: "asc" } },
-    }),
-    prisma.event.findMany({
-      where: { userId: session.user.id },
-      include: {
-        _count: {
-          select: { rsvps: true },
-        },
-      },
-      orderBy: { date: "asc" },
-    }),
-  ]);
+  const [userRSVPsData, userEventsData] = await getDashboardData(session.user.id);
 
   const userRSVPs = userRSVPsData as unknown as EventRSVP[];
   const userEvents = userEventsData as unknown as Event[];

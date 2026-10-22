@@ -1,8 +1,8 @@
 import { auth } from "@/auth";
 import EventActions from "@/components/EventActions";
 import RSVPButtons from "@/components/RSVPButtons";
+import { getEventWithDetails } from "@/lib/data/events";
 import { Event, RSVPStatus } from "@/lib/models";
-import { prisma } from "@/lib/prisma";
 import { format } from "date-fns";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -16,24 +16,7 @@ export default async function EventPage({
 
   const session = await auth();
 
-  const eventData = await prisma.event.findUnique({
-    where: {
-      id: eventId,
-    },
-    include: {
-      user: { select: { name: true, email: true } },
-      rsvps: {
-        include: {
-          user: {
-            select: { name: true, email: true },
-          },
-        },
-      },
-      _count: {
-        select: { rsvps: true },
-      },
-    },
-  });
+  const eventData = await getEventWithDetails(eventId);
 
   if (!eventData) {
     notFound();
