@@ -3,13 +3,13 @@ import { getDashboardData } from "@/lib/data/dashboard";
 import { Event } from "@/lib/models";
 import { format } from "date-fns";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { unauthorized } from "next/navigation";
 
 export default async function DashboardPage() {
   const session = await auth();
 
   if (!session?.user?.id) {
-    redirect("/login");
+    unauthorized();
   }
 
   const { userRSVPs, userEvents } = await getDashboardData(session.user.id);

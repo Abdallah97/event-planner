@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import EditEventForm from "@/components/EditEventForm";
 import { getEventById } from "@/lib/data/events";
-import { notFound, redirect } from "next/navigation";
+import { forbidden, notFound, unauthorized } from "next/navigation";
 
 export default async function EditEventPage({
   params,
@@ -12,7 +12,7 @@ export default async function EditEventPage({
   const session = await auth();
 
   if (!session?.user?.id) {
-    redirect(`/login?callbackUrl=/events/${eventId}/edit`);
+    unauthorized();
   }
 
   const event = await getEventById(eventId);
@@ -23,7 +23,7 @@ export default async function EditEventPage({
 
   // Ensure only the event organizer can access the edit screen
   if (event.userId !== session.user.id) {
-    redirect(`/events/${eventId}`);
+    forbidden();
   }
 
   return <EditEventForm event={event} />;

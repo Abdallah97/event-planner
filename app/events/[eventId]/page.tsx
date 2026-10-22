@@ -5,7 +5,7 @@ import { getEventWithDetails } from "@/lib/data/events";
 import { Event, RSVPStatus } from "@/lib/models";
 import { format } from "date-fns";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { forbidden, notFound } from "next/navigation";
 
 export default async function EventPage({
   params,
@@ -23,7 +23,7 @@ export default async function EventPage({
   }
 
   if (!eventData.isPublic && eventData.userId !== session?.user?.id) {
-    notFound();
+    forbidden();
   }
 
   const event = eventData as unknown as Event;
