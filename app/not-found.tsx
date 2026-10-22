@@ -40,7 +40,7 @@ export default function NotFound() {
 
           <Link
             href="/events"
-            className="inline-flex items-center justify-center w-full px-6 py-3 bg-slate-800 text-foreground font-medium rounded-lg border border-slate-600 hover:bg-slate-700 transition-colors duration-200"
+            className="inline-flex items-center justify-center w-full px-6 py-3 bg-slate-800 text-amber-50 font-medium rounded-lg border border-slate-600 hover:bg-slate-700 transition-colors duration-200"
           >
             <svg
               className="w-5 h-5 mr-2"
