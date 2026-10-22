@@ -1,7 +1,8 @@
+import { Event, EventRSVP } from "@/lib/models";
 import { prisma } from "@/lib/prisma";
 
 export async function getDashboardData(userId: string) {
-  return Promise.all([
+  const [userRSVPsData, userEventsData] = await Promise.all([
     prisma.rSVP.findMany({
       where: { userId },
       include: {
@@ -25,4 +26,9 @@ export async function getDashboardData(userId: string) {
       orderBy: { date: "asc" },
     }),
   ]);
+
+  return {
+    userRSVPs: userRSVPsData as unknown as EventRSVP[],
+    userEvents: userEventsData as unknown as Event[],
+  };
 }

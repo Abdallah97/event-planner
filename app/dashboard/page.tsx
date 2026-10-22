@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { getDashboardData } from "@/lib/data/dashboard";
-import { Event, EventRSVP } from "@/lib/models";
+import { Event } from "@/lib/models";
 import { format } from "date-fns";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -12,10 +12,7 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const [userRSVPsData, userEventsData] = await getDashboardData(session.user.id);
-
-  const userRSVPs = userRSVPsData as unknown as EventRSVP[];
-  const userEvents = userEventsData as unknown as Event[];
+  const { userRSVPs, userEvents } = await getDashboardData(session.user.id);
 
   const now = new Date();
   const upcomingEvents = userEvents.filter(
